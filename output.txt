@@ -1,0 +1,37 @@
+CAT CAN EAT RAT                         
+RAT CANNOT EAT CAT                      
+RAT CAN RAT                             
+
+---- JOB END ----
+
+ABCD                                    
+PQRS                                    
+DO NOT                                  
+MATCH                                   
+
+---- JOB END ----
+
+3 Little Rats went to OS class          
+The cat ate one                         
+2 Little Rats went to OS class          
+The cat ate one                         
+1 Little Rats went to OS class          
+The cat ate one                         
+Class dismissed                         
+
+---- JOB END ----
+
+*                                       
+*   *                                   
+*   *   *                               
+
+---- JOB END ----
+
+*                                       
+*   *                                   
+*   *   *                               
+*   *                                   
+*                                       
+
+---- JOB END ----
+
