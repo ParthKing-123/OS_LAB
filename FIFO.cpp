@@ -1,68 +1,107 @@
 #include <iostream>
+#include <vector>
+#include <queue>
+#include <iomanip>
 using namespace std;
 
 int main() {
-    int n, frames;
+    
+    int n, frameSize;
 
     cout << "Enter number of pages: ";
     cin >> n;
 
-    int pages[n];
-    cout << "Enter page reference string:\n";
-    for(int i = 0; i < n; i++) {
+    vector<int> pages(n);
+
+    cout << "Enter page reference string: ";
+    for (int i = 0; i < n; i++) {
         cin >> pages[i];
     }
 
     cout << "Enter number of frames: ";
-    cin >> frames;
+    cin >> frameSize;
 
-    int frame[frames];
-    for(int i = 0; i < frames; i++)
-        frame[i] = -1;
+    vector<int> frames(frameSize, -1);
+    queue<int> order;
 
-    int pageFaults = 0, hits = 0;
-    int index = 0; // FIFO pointer
+    int hits = 0, misses = 0;
 
-    for(int i = 0; i < n; i++) {
+    cout << "\nFIFO Page Replacement Process:\n\n";
+
+    for (int i = 0; i < n; i++) {
+        int page = pages[i];
         bool found = false;
 
-        // Check hit
-        for(int j = 0; j < frames; j++) {
-            if(frame[j] == pages[i]) {
+        // Check HIT
+        for (int j = 0; j < frameSize; j++) {
+            if (frames[j] == page) {
                 found = true;
                 hits++;
+                cout << "Page " << page << " -> HIT\n";
                 break;
             }
         }
 
-        // If miss (page fault)
-        if(!found) {
-            frame[index] = pages[i];
-            index = (index + 1) % frames;
-            pageFaults++;
+        // MISS
+        if (!found) {
+            misses++;
+
+            bool placed = false;
+
+            // Empty frame available
+            for (int j = 0; j < frameSize; j++) {
+                if (frames[j] == -1) {
+                    frames[j] = page;
+                    order.push(page);
+                    placed = true;
+                    break;
+                }
+            }
+
+            // Replace oldest page
+            if (!placed) {
+                int oldest = order.front();
+                order.pop();
+
+                // Replace in same frame position
+                for (int j = 0; j < frameSize; j++) {
+                    if (frames[j] == oldest) {
+                        frames[j] = page;
+                        break;
+                    }
+                }
+
+                order.push(page);
+            }
+
+            cout << "Page " << page << " -> MISS\n";
         }
 
         // Display frames
-        cout << "After page " << pages[i] << ": ";
-        for(int j = 0; j < frames; j++) {
-            if(frame[j] == -1) cout << "- ";
-            else cout << frame[j] << " ";
+        cout << "Frames: ";
+        for (int j = 0; j < frameSize; j++) {
+            if (frames[j] != -1)
+                cout << frames[j] << " ";
         }
 
-        if(found) cout << " (Hit)";
-        else cout << " (Miss)";
-        cout << endl;
+        cout << "\n\n";
     }
 
     // Ratios
     float hitRatio = (float)hits / n;
-    float missRatio = (float)pageFaults / n;
+    float missRatio = (float)misses / n;
 
-    cout << "\nTotal Hits = " << hits;
-    cout << "\nTotal Page Faults (Misses) = " << pageFaults;
+    cout << "=============================\n";
+    cout << "Total Hits      : " << hits << endl;
+    cout << "Total Misses    : " << misses << endl;
 
-    cout << "\nHit Ratio = " << hitRatio;
-    cout << "\nMiss Ratio = " << missRatio;
+    cout << fixed << setprecision(2);
+
+    cout << "Hit Ratio       : " << hitRatio << endl;
+    cout << "Miss Ratio      : " << missRatio << endl;
+
+    cout << "Hit Percentage  : " << hitRatio * 100 << "%\n";
+    cout << "Miss Percentage : " << missRatio * 100 << "%\n";
 
     return 0;
 }
