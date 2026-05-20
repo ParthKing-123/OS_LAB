@@ -1,66 +1,77 @@
 #include<iostream>
 using namespace std;
+
 int main()
 {
-   struct process{
-       int pid,at,bt,tat,wt,rbt;
-   }p[3];
-   int i=0,np,tq=2,x=0,y=0;
-   cout<<"Enter number of Processes:-";
-   cin>>np;
- 
-   for(int i=0;i<3;i++)
-   {
-       cout<<"Enter PID";
-       cin>>p[i].pid;
-       cout<<"Enter at";
-       cin>>p[i].at;
-       cout<<"Enter bt";
-       cin>>p[i].bt;
-   }
-    for(int i=0;i<np;i++)
-   {
-       p[i].rbt=p[i].bt;
-   }
-   while(1)
-   {
-       if(p[i].bt>0)
-       {
-           if(p[i].bt>tq)
-           {
-               x=x+tq;
-               p[i].bt=p[i].bt-tq;
-           }
-           else{
-               x=x+p[i].bt;
-               p[i].rbt=0;
-               y++;
-               p[i].tat=x;
-               p[i].wt=p[i].tat-p[i].bt;
-               if(y==np)
-               {
-                   break;
-               }
-           }
+    struct process
+    {
+        int pid, at, bt, tat, wt, rbt;
+    } p[10];
 
-       }
-       if(y==np-1)
-       {
-           i=0;
-       }
-       else{
-           i++;
-       }
-   }
-cout << "\nPID\tAT\tBT\tTAT\tWT\n";
-for(int i = 0; i < np; i++)
-{
-   cout << p[i].pid << "\t"
-        << p[i].at << "\t"
-        << p[i].bt << "\t"
-        << p[i].tat << "\t"
-        << p[i].wt << "\n";
-}
+    int np, tq;
+    int completed = 0;
+    int time = 0;
 
-return 0;
+    cout << "Enter number of Processes: ";
+    cin >> np;
+
+    cout << "Enter Time Quantum: ";
+    cin >> tq;
+
+    // Input
+    for(int i = 0; i < np; i++)
+    {
+        cout << "\nEnter PID: ";
+        cin >> p[i].pid;
+
+        cout << "Enter Arrival Time: ";
+        cin >> p[i].at;
+
+        cout << "Enter Burst Time: ";
+        cin >> p[i].bt;
+
+        p[i].rbt = p[i].bt; // Remaining BT
+    }
+
+    int i = 0;
+
+    while(completed != np)
+    {
+        if(p[i].rbt > 0)
+        {
+            // If remaining burst time is greater than time quantum
+            if(p[i].rbt > tq)
+            {
+                time += tq;
+                p[i].rbt -= tq;
+            }
+            else
+            {
+                // Process completes
+                time += p[i].rbt;
+                p[i].rbt = 0;
+
+                completed++;
+
+                p[i].tat = time - p[i].at;
+                p[i].wt = p[i].tat - p[i].bt;
+            }
+        }
+
+        i = (i + 1) % np;
+    }
+
+    // Output
+    cout << "\nPID\tAT\tBT\tTAT\tWT\n";
+
+    for(int i = 0; i < np; i++)
+    {
+        cout << p[i].pid << "\t"
+             << p[i].at << "\t"
+             << p[i].bt << "\t"
+             << p[i].tat << "\t"
+             << p[i].wt << "\n";
+    }
+
+    return 0;
 }
